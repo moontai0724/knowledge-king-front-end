@@ -4,6 +4,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
+    title: null,
     titleTemplate: (titleChunk) => {
       return titleChunk ? `${titleChunk} | 知識王` : '知識王'
     },
@@ -44,12 +45,48 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    // https://auth.nuxtjs.org
+    '@nuxtjs/auth-next',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    // https://go.nuxtjs.dev/vuetify
+    '@nuxtjs/vuetify',
   ],
+
+  auth: {
+    strategies: {
+      local: {
+        token: {
+          property: 'data.token.access_token',
+          global: true,
+          type: 'Bearer',
+          maxAge: 60 * 60 * 24,
+        },
+        refreshToken: {
+          property: 'data.token.refresh_token',
+          maxAge: 60 * 60 * 24 * 30,
+          data: 'refresh_token',
+          required: true,
+        },
+        user: {
+          property: 'data',
+        },
+        endpoints: {
+          login: { url: '/auth/login', method: 'post' },
+          refresh: { url: '/auth/refresh', method: 'post' },
+          logout: false,
+          user: { url: '/user', method: 'get' },
+        },
+      },
+    },
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
+
+  router: {
+    middleware: ['auth'],
+  },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {

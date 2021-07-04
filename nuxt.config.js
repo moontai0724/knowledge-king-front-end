@@ -1,3 +1,5 @@
+import path from 'path'
+import fs from 'fs'
 export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
@@ -20,6 +22,13 @@ export default {
   server: {
     port: 3000,
     host: '0.0.0.0',
+    https:
+      process.env.schema === 'https'
+        ? {
+            key: fs.readFileSync(path.resolve(__dirname, 'certs', 'cert.key')),
+            cert: fs.readFileSync(path.resolve(__dirname, 'certs', 'cert.crt')),
+          }
+        : undefined,
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css

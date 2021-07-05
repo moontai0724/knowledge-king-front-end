@@ -1,5 +1,7 @@
 <template>
-  <div />
+  <v-row align="center" justify="space-around">
+    <v-btn to="/admin">進入後台管理介面</v-btn>
+  </v-row>
 </template>
 
 <script lang="ts">

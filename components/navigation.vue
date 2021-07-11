@@ -97,7 +97,7 @@ export default Vue.extend({
         {
           icon: 'mdi-account',
           title: '使用者管理',
-          to: '',
+          to: '/admin/users',
           childs: [],
         },
         {

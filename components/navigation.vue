@@ -10,9 +10,15 @@
             <v-icon>mdi-menu-down</v-icon>
           </v-btn>
           <span class="text-truncate" v-text="$auth.user.name" />
-          <v-avatar color="indigo" size="36" class="mx-1">
-            <img :src="avatarUrl" alt="avatar" />
-          </v-avatar>
+          <a
+            title="至 Gravatar 編輯大頭貼"
+            href="https://gravatar.com/gravatars/new"
+            target="_blank"
+          >
+            <v-avatar color="indigo" size="36" class="mx-1">
+              <img :src="$auth.user.profile_photo" alt="avatar" />
+            </v-avatar>
+          </a>
         </template>
         <v-list dense>
           <v-list-item disabled>
@@ -82,7 +88,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import md5 from 'md5'
 export default Vue.extend({
   data() {
     return {
@@ -119,14 +124,6 @@ export default Vue.extend({
         },
       ],
     }
-  },
-  computed: {
-    avatarUrl() {
-      const base = 'https://www.gravatar.com/avatar/'
-      const email: string = String(this.$auth.user?.email)
-      const emailHash = md5(email)
-      return base + emailHash
-    },
   },
   mounted() {
     this.title = String(this.$meta().refresh().metaInfo.titleChunk)

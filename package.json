@@ -22,7 +22,6 @@
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/pwa": "^3.3.5",
     "core-js": "^3.15.1",
-    "md5": "^2.3.0",
     "nuxt": "^2.15.7",
     "vuetify": "^2.5.5"
   },
@@ -36,7 +35,6 @@
     "@nuxtjs/eslint-module": "^3.0.2",
     "@nuxtjs/stylelint-module": "^4.0.0",
     "@nuxtjs/vuetify": "^1.12.1",
-    "@types/md5": "^2.3.0",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-nuxt": "^2.0.0",

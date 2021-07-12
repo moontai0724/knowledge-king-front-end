@@ -95,8 +95,12 @@ export default Vue.extend({
             (user.total_correct / user.total_answered) * 100
           return {
             ...user,
-            percent_answered: isNaN(percentAnswered) ? 0 : percentAnswered,
-            percent_correct: isNaN(percentCorrect) ? 0 : percentCorrect,
+            percent_answered: isNaN(percentAnswered)
+              ? 0
+              : Math.round(percentAnswered * 100) / 100,
+            percent_correct: isNaN(percentCorrect)
+              ? 0
+              : Math.round(percentCorrect * 100) / 100,
           }
         })
       )

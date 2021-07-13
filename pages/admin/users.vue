@@ -32,14 +32,28 @@
         ></span>
       </v-avatar>
     </template>
+    <template #[`item.permission`]="{ item }">
+      <span
+        :style="{
+          color: ['red', 'black', 'green', 'blue'][item.permission],
+        }"
+        v-text="roles[item.permission].text"
+      ></span>
+    </template>
     <template #[`item.percent_answered`]="{ item }">
-      <div style="max-height: 100%; height: 40px" class="d-flex align-center">
+      <div
+        style="max-height: 100%; height: 40px"
+        class="d-flex align-center justify-center"
+      >
         <donut-chart height="80%" :percent="item.percent_answered" />
         <span class="mx-2">{{ item.percent_answered }}%</span>
       </div>
     </template>
     <template #[`item.percent_correct`]="{ item }">
-      <div style="max-height: 100%; height: 40px" class="d-flex align-center">
+      <div
+        style="max-height: 100%; height: 40px"
+        class="d-flex align-center justify-center"
+      >
         <donut-chart height="80%" :percent="item.percent_correct" />
         <span class="mx-2">{{ item.percent_correct }}%</span>
       </div>
@@ -237,16 +251,19 @@ export default Vue.extend({
           value: 'avatar',
           width: '5%',
         },
-        { text: '姓名', value: 'name', width: '50%' },
+        { text: '姓名', value: 'name', width: '40%' },
+        { text: '身份', value: 'permission', width: '10%', align: 'center' },
         {
           text: '總答題數 (%)',
           value: 'percent_answered',
           width: '20%',
+          align: 'center',
         },
         {
           text: '正確率 (%)',
           value: 'percent_correct',
           width: '20%',
+          align: 'center',
         },
         { value: 'data-table-expand', width: '5%' },
       ],

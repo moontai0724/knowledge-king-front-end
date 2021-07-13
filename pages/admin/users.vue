@@ -4,7 +4,7 @@
     :items="users"
     :expanded.sync="expanded"
     :search="search"
-    item-key="id"
+    item-key="user.id"
     show-expand
     style="max-width: 1200px; margin: 0 auto"
     class="elevation-1"
@@ -21,41 +21,45 @@
         ></v-text-field>
       </v-toolbar>
     </template>
-    <template #[`item.avatar`]="{ item }">
+    <template #[`item.user.profile_photo`]="{ item }">
       <v-avatar color="primary" size="36" class="mx-1">
-        <img v-if="item.profile_photo" :src="item.profile_photo" alt="avatar" />
+        <img
+          v-if="item.user.profile_photo"
+          :src="item.user.profile_photo"
+          alt="avatar"
+        />
         <span
           v-else
           class="white--text"
           style="user-select: none"
-          v-text="item.name"
+          v-text="item.user.name"
         ></span>
       </v-avatar>
     </template>
-    <template #[`item.permission`]="{ item }">
+    <template #[`item.user.permission`]="{ item }">
       <span
         :style="{
-          color: ['red', 'black', 'green', 'blue'][item.permission],
+          color: ['red', 'black', 'green', 'blue'][item.user.permission],
         }"
-        v-text="roles[item.permission].text"
+        v-text="roles[item.user.permission].text"
       ></span>
     </template>
-    <template #[`item.percent_answered`]="{ item }">
+    <template #[`item.stats.percentAnswered`]="{ item }">
       <div
         style="max-height: 100%; height: 40px"
         class="d-flex align-center justify-center"
       >
-        <donut-chart height="80%" :percent="item.percent_answered" />
-        <span class="mx-2">{{ item.percent_answered }}%</span>
+        <donut-chart height="80%" :percent="item.stats.percentAnswered" />
+        <span class="mx-2">{{ item.stats.percentAnswered }}%</span>
       </div>
     </template>
-    <template #[`item.percent_correct`]="{ item }">
+    <template #[`item.stats.percentCorrect`]="{ item }">
       <div
         style="max-height: 100%; height: 40px"
         class="d-flex align-center justify-center"
       >
-        <donut-chart height="80%" :percent="item.percent_correct" />
-        <span class="mx-2">{{ item.percent_correct }}%</span>
+        <donut-chart height="80%" :percent="item.stats.percentCorrect" />
+        <span class="mx-2">{{ item.stats.percentCorrect }}%</span>
       </div>
     </template>
     <template #expanded-item="{ item }">
@@ -79,14 +83,14 @@
                       <v-icon>mdi-account-outline</v-icon>
                       <span class="ms-2">姓名</span>
                     </td>
-                    <td v-text="item.name" />
+                    <td v-text="item.user.name" />
                   </tr>
                   <tr>
                     <td>
                       <v-icon>mdi-card-account-details-outline</v-icon>
                       <span class="ms-2">帳號</span>
                     </td>
-                    <td v-text="item.account" />
+                    <td v-text="item.user.account" />
                   </tr>
 
                   <tr>
@@ -95,7 +99,10 @@
                       <span class="ms-2">電子信箱</span>
                     </td>
                     <td>
-                      <a :href="`mailto:${item.email}`" v-text="item.email"></a>
+                      <a
+                        :href="`mailto:${item.user.email}`"
+                        v-text="item.user.email"
+                      ></a>
                     </td>
                   </tr>
 
@@ -108,10 +115,10 @@
                       <span
                         :style="{
                           color: ['red', 'black', 'green', 'blue'][
-                            item.permission
+                            item.user.permission
                           ],
                         }"
-                        v-text="roles[item.permission].text"
+                        v-text="roles[item.user.permission].text"
                       ></span>
                     </td>
                   </tr>
@@ -123,7 +130,7 @@
                     </td>
                     <td
                       :title="
-                        new Date(item.registered_at).toLocaleString(
+                        new Date(item.user.registered_at).toLocaleString(
                           {},
                           {
                             hour12: false,
@@ -137,7 +144,7 @@
                         )
                       "
                     >
-                      {{ new Date(item.registered_at) }}
+                      {{ new Date(item.user.registered_at) }}
                     </td>
                   </tr>
                 </tbody>
@@ -163,9 +170,10 @@
                       <span class="ms-2">總答題數</span>
                     </td>
                     <td>
-                      {{ item.total_answered }}/{{ item.total_question }} ({{
-                        item.percent_answered
-                      }}%)
+                      {{ item.user.total_answered }}/{{
+                        item.user.total_question
+                      }}
+                      ({{ item.stats.percentAnswered }}%)
                     </td>
                   </tr>
                   <tr>
@@ -174,9 +182,10 @@
                       <span class="ms-2">正確率</span>
                     </td>
                     <td>
-                      {{ item.total_correct }}/{{ item.total_answered }} ({{
-                        item.percent_correct
-                      }}%)
+                      {{ item.user.total_correct }}/{{
+                        item.user.total_answered
+                      }}
+                      ({{ item.stats.percentCorrect }}%)
                     </td>
                   </tr>
                   <tr>
@@ -184,7 +193,7 @@
                       <v-icon>mdi-email-outline</v-icon>
                       <span class="ms-2">平均反應時間</span>
                     </td>
-                    <td>{{ item.average_react }} 秒</td>
+                    <td>{{ item.stats.averageReactTime }} 秒</td>
                   </tr>
                 </tbody>
               </template>
@@ -193,17 +202,17 @@
         </v-row>
         <v-row class="ma-1 pb-5" align="center" justify="end">
           <v-btn
-            v-if="!item.editing"
+            v-show="!item.states.isEditing"
             color="warning"
             class="elevation-2 black--text"
             disabled
-            @click="item.editing = true"
+            @click="item.states.isEditing = true"
           >
             <v-icon left>mdi-pencil</v-icon>
             編輯
           </v-btn>
           <v-btn
-            v-if="item.editing"
+            v-show="item.states.isEditing"
             color="success"
             class="elevation-2 black--text"
             @click="item.editing = false"
@@ -219,6 +228,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { User, UserItem } from '~/types/user.interface'
 export default Vue.extend({
   data() {
     return {
@@ -248,20 +258,25 @@ export default Vue.extend({
           text: '',
           align: 'center',
           sortable: false,
-          value: 'avatar',
+          value: 'user.profile_photo',
           width: '5%',
         },
-        { text: '姓名', value: 'name', width: '40%' },
-        { text: '身份', value: 'permission', width: '10%', align: 'center' },
+        { text: '姓名', value: 'user.name', width: '40%' },
+        {
+          text: '身份',
+          value: 'user.permission',
+          width: '10%',
+          align: 'center',
+        },
         {
           text: '總答題數 (%)',
-          value: 'percent_answered',
+          value: 'stats.percentAnswered',
           width: '20%',
           align: 'center',
         },
         {
           text: '正確率 (%)',
-          value: 'percent_correct',
+          value: 'stats.percentCorrect',
           width: '20%',
           align: 'center',
         },
@@ -279,25 +294,30 @@ export default Vue.extend({
   methods: {
     async fetchUsers() {
       this.users = await this.$axios.$get('/admin/users').then((response) =>
-        response.data.map((user: any) => {
+        response.data.map((user: User) => {
           const percentAnswered =
             (user.total_answered / user.total_question) * 100
           const percentCorrect =
             (user.total_correct / user.total_answered) * 100
           const averageReactTime = user.total_time_used / user.total_answered
-          return {
-            ...user,
-            percent_answered: isNaN(percentAnswered)
-              ? 0
-              : Math.round(percentAnswered * 100) / 100,
-            percent_correct: isNaN(percentCorrect)
-              ? 0
-              : Math.round(percentCorrect * 100) / 100,
-            average_react: isNaN(averageReactTime)
-              ? 0
-              : Math.round(averageReactTime * 100) / 100,
-            editing: false,
+          const response: UserItem = {
+            user,
+            stats: {
+              percentAnswered: isNaN(percentAnswered)
+                ? 0
+                : Math.round(percentAnswered * 100) / 100,
+              percentCorrect: isNaN(percentCorrect)
+                ? 0
+                : Math.round(percentCorrect * 100) / 100,
+              averageReactTime: isNaN(averageReactTime)
+                ? 0
+                : Math.round(averageReactTime * 100) / 100,
+            },
+            states: {
+              isEditing: false,
+            },
           }
+          return response
         })
       )
       this.loading = false

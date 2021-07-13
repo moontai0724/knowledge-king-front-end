@@ -112,6 +112,7 @@ export default {
           primary: '#4B6FB1',
           secondary: '#EBF1FD',
           error: '#EE9090',
+          warning: '#FFF888',
           success: '#90EE90',
         },
       },

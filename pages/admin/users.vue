@@ -62,7 +62,7 @@
       <td :colspan="headers.length">
         <v-row class="ma-2">
           <v-col>
-            <v-simple-table>
+            <v-simple-table class="detail-table">
               <template #default>
                 <thead>
                   <tr>
@@ -75,14 +75,14 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td style="white-space: nowrap">
+                    <td>
                       <v-icon>mdi-account-outline</v-icon>
                       <span class="ms-2">姓名</span>
                     </td>
                     <td v-text="item.name" />
                   </tr>
                   <tr>
-                    <td style="white-space: nowrap">
+                    <td>
                       <v-icon>mdi-card-account-details-outline</v-icon>
                       <span class="ms-2">帳號</span>
                     </td>
@@ -90,7 +90,7 @@
                   </tr>
 
                   <tr>
-                    <td style="white-space: nowrap">
+                    <td>
                       <v-icon>mdi-email-outline</v-icon>
                       <span class="ms-2">電子信箱</span>
                     </td>
@@ -100,7 +100,7 @@
                   </tr>
 
                   <tr>
-                    <td style="white-space: nowrap">
+                    <td>
                       <v-icon>mdi-shield-account-outline</v-icon>
                       <span class="ms-2">身份</span>
                     </td>
@@ -117,7 +117,7 @@
                   </tr>
 
                   <tr>
-                    <td style="white-space: nowrap">
+                    <td>
                       <v-icon>mdi-clock-outline</v-icon>
                       <span class="ms-2">註冊時間</span>
                     </td>
@@ -145,7 +145,7 @@
             </v-simple-table>
           </v-col>
           <v-col>
-            <v-simple-table>
+            <v-simple-table class="detail-table">
               <template #default>
                 <thead>
                   <tr>
@@ -158,7 +158,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td style="white-space: nowrap">
+                    <td>
                       <v-icon>mdi-head-question-outline</v-icon>
                       <span class="ms-2">總答題數</span>
                     </td>
@@ -169,7 +169,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td style="white-space: nowrap">
+                    <td>
                       <v-icon>mdi-file-check-outline</v-icon>
                       <span class="ms-2">正確率</span>
                     </td>
@@ -180,7 +180,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td style="white-space: nowrap">
+                    <td>
                       <v-icon>mdi-email-outline</v-icon>
                       <span class="ms-2">平均反應時間</span>
                     </td>
@@ -305,3 +305,15 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.detail-table {
+  tbody {
+    display: table;
+    width: 100%;
+  }
+  td:nth-child(1) {
+    white-space: nowrap;
+  }
+}
+</style>

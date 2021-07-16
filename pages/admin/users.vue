@@ -462,7 +462,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .detail-table {
   tbody {
-    display: table;
+    display: table !important;
     width: 100%;
   }
   td:nth-child(1) {

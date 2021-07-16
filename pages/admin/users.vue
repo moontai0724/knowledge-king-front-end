@@ -63,17 +63,17 @@
       </div>
     </template>
     <template #expanded-item="{ item }">
-      <v-progress-linear
-        v-if="item.states.isLoading"
-        indeterminate
-        color="primary"
-      />
       <td :colspan="headers.length">
         <v-form
           ref="form"
           v-model="item.states.isFormValid"
           @submit.prevent="saveUser(item)"
         >
+          <v-progress-linear
+            v-if="item.states.isLoading"
+            indeterminate
+            color="primary"
+          />
           <v-row class="mt-2">
             <v-col>
               <v-alert

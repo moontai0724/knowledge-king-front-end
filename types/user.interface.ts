@@ -25,6 +25,8 @@ export interface UserItem {
     averageReactTime: number
   }
   states?: {
+    isFormValid: boolean
+    isLoading: boolean
     isEditing: boolean
   }
 }

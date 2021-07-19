@@ -267,12 +267,7 @@
               </v-simple-table>
             </v-col>
           </v-row>
-          <v-row
-            v-if="$auth.user.permission === 3"
-            class="ma-1 pb-5"
-            align="center"
-            justify="end"
-          >
+          <v-row class="ma-1 pb-5" align="center" justify="end">
             <v-btn
               v-show="!item.states.isEditing"
               type="button"
@@ -304,6 +299,7 @@
 import Vue from 'vue'
 import { User, UserItem } from '~/types/user.interface'
 export default Vue.extend({
+  middleware: 'role/admin',
   data() {
     return {
       error: undefined,

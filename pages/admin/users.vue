@@ -267,7 +267,12 @@
               </v-simple-table>
             </v-col>
           </v-row>
-          <v-row class="ma-1 pb-5" align="center" justify="end">
+          <v-row
+            v-if="$auth.user.permission === 3"
+            class="ma-1 pb-5"
+            align="center"
+            justify="end"
+          >
             <v-btn
               v-show="!item.states.isEditing"
               type="button"

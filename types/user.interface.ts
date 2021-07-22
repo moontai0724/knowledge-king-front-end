@@ -30,3 +30,5 @@ export interface UserItem {
     isEditing: boolean
   }
 }
+
+export default User

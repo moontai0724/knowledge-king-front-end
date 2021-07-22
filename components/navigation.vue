@@ -99,7 +99,7 @@ export default Vue.extend({
             {
               icon: 'mdi-folder-multiple',
               title: '主題管理',
-              to: '',
+              to: '/admin/topics',
             },
             {
               icon: 'mdi-file-document-multiple-outline',

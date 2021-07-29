@@ -17,29 +17,67 @@
           single-line
           hide-details
         ></v-text-field>
-        <v-dialog v-model="dialog">
+        <v-dialog v-model="dialog" max-width="500px">
           <template #activator="{ on, attrs }">
             <v-btn
-              disabled
               color="green"
               class="ml-2 white--text"
               v-bind="attrs"
               v-on="on"
+              @click="newTopic = {}"
             >
               新開主題
             </v-btn>
           </template>
-          <v-card>
+          <v-card :loading="submittingCreate">
             <v-card-title>
               <span class="text-h5">新開主題</span>
             </v-card-title>
 
-            <v-card-text></v-card-text>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-select
+                    v-model="newTopic.group_id"
+                    :disabled="submittingCreate"
+                    :rules="[(value) => !!value || '請選擇組別']"
+                    :items="groups"
+                    class="mx-2"
+                    label="組別"
+                    required
+                  ></v-select>
+                  <v-text-field
+                    v-model="newTopic.title"
+                    :disabled="submittingCreate"
+                    :rules="[(value) => !!value || '請填入主題']"
+                    counter
+                    maxlength="60"
+                    class="mx-2"
+                    label="主題"
+                    required
+                  ></v-text-field>
+                </v-row>
+              </v-container>
+            </v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Cancel </v-btn>
-              <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+              <v-btn
+                color="red darken-1"
+                text
+                :disabled="submittingCreate"
+                @click="dialog = false"
+              >
+                取消
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                :disabled="submittingCreate"
+                @click="createTopic(newTopic)"
+              >
+                送出
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -112,6 +150,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Selectable } from '~/types/vuetify.interface'
+import Group from '~/types/group.interface'
 import Topic, { TopicItem } from '~/types/topic.interface'
 export default Vue.extend({
   middleware: 'role/admin',
@@ -142,14 +182,23 @@ export default Vue.extend({
           sortable: false,
         },
       ],
+      groups: [] as Selectable[],
       topics: [] as TopicItem[],
+      newTopic: {},
+      submittingCreate: false,
     }
   },
   head: {
     title: '題庫管理 - 主題管理',
   },
   async mounted() {
-    this.topics = await this.fetchTopics()
+    this.topics = (await this.fetchTopics()).map(
+      (topic) => ({ topic } as TopicItem)
+    )
+    this.groups = (await this.fetchGroups()).map((group) => ({
+      text: group.title,
+      value: group.id.toString(),
+    }))
     this.loading = false
   },
   methods: {
@@ -157,7 +206,20 @@ export default Vue.extend({
       return await this.$axios
         .$get('/admin/topics')
         .then((response) => response.data as Topic[])
-        .then((topics) => topics.map((topic) => ({ topic } as TopicItem)))
+    },
+    async fetchGroups() {
+      return await this.$axios
+        .$get('/admin/groups')
+        .then((response) => response.data as Group[])
+    },
+    async createTopic() {
+      this.submittingCreate = true
+      const created = await this.submitCreate(this.newTopic)
+      this.topics.push({ topic: created })
+      this.$store.commit('message/setColor', 'primary')
+      this.$store.commit('message/set', '新增成功！')
+      this.dialog = false
+      this.submittingCreate = false
     },
     async unlockItem(item: TopicItem) {
       const topic = item.topic
@@ -168,6 +230,11 @@ export default Vue.extend({
       const topic = item.topic
       topic.opened_from = null
       return await this.submit(topic)
+    },
+    async submitCreate(topic: any) {
+      return await this.$axios
+        .$post(`/admin/topics`, topic)
+        .then((response) => response.data as Topic)
     },
     async submit(topic: Topic) {
       return await this.$axios

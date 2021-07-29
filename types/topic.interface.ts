@@ -11,6 +11,10 @@ export interface Topic {
 
 export interface TopicItem {
   topic: Topic
+  state: {
+    editing: boolean
+    submitting: boolean
+  }
 }
 
 export default Topic

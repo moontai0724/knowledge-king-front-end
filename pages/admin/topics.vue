@@ -39,6 +39,8 @@
                 <v-row>
                   <v-select
                     v-model="newTopic.group_id"
+                    item-text="title"
+                    item-value="id"
                     :disabled="submittingCreate"
                     :rules="[(value) => !!value || '請選擇組別']"
                     :items="groups"
@@ -83,6 +85,38 @@
         </v-dialog>
       </v-toolbar>
     </template>
+    <template #[`item.topic.group.title`]="{ item }">
+      <template v-if="!item.state.editing">
+        {{ item.topic.group.title }}
+      </template>
+      <v-select
+        v-else
+        v-model="item.topic.group"
+        item-text="title"
+        item-value="id"
+        return-object
+        :disabled="item.state.submitting"
+        :rules="[(value) => !!value || '請選擇組別']"
+        :items="groups"
+        class="mx-2"
+        label="組別"
+        required
+      ></v-select>
+    </template>
+    <template #[`item.topic.title`]="{ item }">
+      <template v-if="!item.state.editing">{{ item.topic.title }}</template>
+      <v-text-field
+        v-else
+        v-model="item.topic.title"
+        :disabled="item.state.submitting"
+        :rules="[(value) => !!value || '請填入主題']"
+        counter
+        maxlength="60"
+        class="mx-2"
+        label="主題"
+        required
+      ></v-text-field>
+    </template>
     <template #[`item.actions`]="{ item }">
       <v-tooltip bottom>
         <template #activator="{ on, attrs }">
@@ -99,20 +133,35 @@
         </template>
         <span>查看題目</span>
       </v-tooltip>
-      <v-tooltip bottom>
+      <v-tooltip v-if="!item.state.editing" bottom>
         <template #activator="{ on, attrs }">
           <v-icon
             small
             class="mx-1"
-            disabled
             v-bind="attrs"
             v-on="on"
-            @click="editItem(item)"
+            @click="item.state.editing = true"
           >
             mdi-pencil-outline
           </v-icon>
         </template>
         <span>編輯</span>
+      </v-tooltip>
+      <v-tooltip v-else bottom>
+        <template #activator="{ on, attrs }">
+          <v-icon
+            small
+            :disabled="item.state.submitting"
+            color="green"
+            class="mx-1"
+            v-bind="attrs"
+            v-on="on"
+            @click="editTopic(item)"
+          >
+            mdi-content-save
+          </v-icon>
+        </template>
+        <span>儲存</span>
       </v-tooltip>
       <v-tooltip v-if="item.topic.opened_from" bottom>
         <template #activator="{ on, attrs }">
@@ -150,7 +199,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Selectable } from '~/types/vuetify.interface'
 import Group from '~/types/group.interface'
 import Topic, { TopicItem } from '~/types/topic.interface'
 export default Vue.extend({
@@ -182,7 +230,7 @@ export default Vue.extend({
           sortable: false,
         },
       ],
-      groups: [] as Selectable[],
+      groups: [] as Group[],
       topics: [] as TopicItem[],
       newTopic: {},
       submittingCreate: false,
@@ -193,12 +241,9 @@ export default Vue.extend({
   },
   async mounted() {
     this.topics = (await this.fetchTopics()).map(
-      (topic) => ({ topic } as TopicItem)
+      (topic) => ({ topic, state: { editing: false } } as TopicItem)
     )
-    this.groups = (await this.fetchGroups()).map((group) => ({
-      text: group.title,
-      value: group.id.toString(),
-    }))
+    this.groups = await this.fetchGroups()
     this.loading = false
   },
   methods: {
@@ -215,11 +260,25 @@ export default Vue.extend({
     async createTopic() {
       this.submittingCreate = true
       const created = await this.submitCreate(this.newTopic)
-      this.topics.push({ topic: created })
+      this.topics.push({
+        topic: created,
+        state: { editing: false, submitting: false },
+      })
       this.$store.commit('message/setColor', 'primary')
       this.$store.commit('message/set', '新增成功！')
       this.dialog = false
       this.submittingCreate = false
+    },
+    async editTopic(item: TopicItem) {
+      const topic = item.topic
+      this.loading = true
+      item.state.submitting = true
+      item.topic = await this.submit(topic)
+      this.$store.commit('message/setColor', 'primary')
+      this.$store.commit('message/set', '編輯成功！')
+      item.state.submitting = false
+      item.state.editing = false
+      this.loading = false
     },
     async unlockItem(item: TopicItem) {
       const topic = item.topic
@@ -238,7 +297,10 @@ export default Vue.extend({
     },
     async submit(topic: Topic) {
       return await this.$axios
-        .$patch(`/admin/topics/${topic.id}`, topic)
+        .$patch(`/admin/topics/${topic.id}`, {
+          ...topic,
+          group_id: topic.group.id,
+        })
         .then((response) => response.data as Topic)
     },
   },

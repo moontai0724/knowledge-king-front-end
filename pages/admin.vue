@@ -1,7 +1,13 @@
 <template>
   <div>
     <nuxt-child />
-    <v-snackbar top color="error" :value="!!$store.state.message.content">
+    <v-snackbar
+      top
+      :color="$store.state.message.color"
+      :value="!!$store.state.message.content"
+      timeout="5000"
+      @input="timeout"
+    >
       {{ $store.state.message.content }}
       <template #action="{ attrs }">
         <v-btn text v-bind="attrs" @click="closeBar">關閉</v-btn>
@@ -18,6 +24,11 @@ export default Vue.extend({
     title: '管理後台',
   },
   methods: {
+    timeout() {
+      setTimeout(() => {
+        this.$store.commit('message/clear')
+      }, 5000)
+    },
     closeBar() {
       this.$store.commit('message/clear')
     },

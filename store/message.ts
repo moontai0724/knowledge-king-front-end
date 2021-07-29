@@ -22,5 +22,6 @@ export default class MessageStoreModule extends VuexModule {
   @Mutation
   clear() {
     this.content = undefined
+    this.color = 'error'
   }
 }

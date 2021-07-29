@@ -76,12 +76,12 @@
         </template>
         <span>編輯</span>
       </v-tooltip>
-      <v-tooltip bottom>
+      <v-tooltip v-if="item.topic.opened_from" bottom>
         <template #activator="{ on, attrs }">
           <v-icon
             small
+            color="red"
             class="mx-1"
-            disabled
             v-bind="attrs"
             v-on="on"
             @click="lockItem(item)"
@@ -91,30 +91,46 @@
         </template>
         <span>關閉作答</span>
       </v-tooltip>
+      <v-tooltip v-else bottom>
+        <template #activator="{ on, attrs }">
+          <v-icon
+            small
+            color="green"
+            class="mx-1"
+            v-bind="attrs"
+            v-on="on"
+            @click="unlockItem(item)"
+          >
+            mdi-lock-open-variant-outline
+          </v-icon>
+        </template>
+        <span>開放作答</span>
+      </v-tooltip>
     </template>
   </v-data-table>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import Topic from '~/types/topic.interface'
+import Topic, { TopicItem } from '~/types/topic.interface'
 export default Vue.extend({
   middleware: 'role/admin',
   data() {
     return {
+      dialog: false,
       loading: true,
       search: '',
       headers: [
         {
           text: '組別',
           align: 'center',
-          value: 'group.title',
+          value: 'topic.group.title',
           width: '10%',
         },
-        { text: '主題', value: 'title', width: '60%' },
+        { text: '主題', value: 'topic.title', width: '60%' },
         {
           text: '題目數量',
-          value: 'question_amount',
+          value: 'topic.question_amount',
           width: '10%',
           align: 'center',
         },
@@ -123,9 +139,10 @@ export default Vue.extend({
           value: 'actions',
           width: '20%',
           align: 'center',
+          sortable: false,
         },
       ],
-      topics: [] as Topic[],
+      topics: [] as TopicItem[],
     }
   },
   head: {
@@ -140,6 +157,22 @@ export default Vue.extend({
       return await this.$axios
         .$get('/admin/topics')
         .then((response) => response.data as Topic[])
+        .then((topics) => topics.map((topic) => ({ topic } as TopicItem)))
+    },
+    async unlockItem(item: TopicItem) {
+      const topic = item.topic
+      topic.opened_from = new Date()
+      return await this.submit(topic)
+    },
+    async lockItem(item: TopicItem) {
+      const topic = item.topic
+      topic.opened_from = null
+      return await this.submit(topic)
+    },
+    async submit(topic: Topic) {
+      return await this.$axios
+        .$patch(`/admin/topics/${topic.id}`, topic)
+        .then((response) => response.data as Topic)
     },
   },
 })

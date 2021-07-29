@@ -5,6 +5,7 @@ export interface Topic {
   id: number
   title: string
   group: Group
+  opened_from: Date | null
   question_amount: number
 }
 

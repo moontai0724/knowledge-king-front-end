@@ -104,7 +104,7 @@ export default Vue.extend({
             {
               icon: 'mdi-file-document-multiple-outline',
               title: '題目管理',
-              to: '',
+              to: '/admin/questions',
             },
           ],
         },

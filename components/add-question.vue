@@ -164,7 +164,7 @@ import Question from '~/types/question.interface'
 export default Vue.extend({
   data() {
     return {
-      dialog: true,
+      dialog: false,
       valid: false,
       rules: {
         required: (value: any) => !!value || '此欄位為必填',

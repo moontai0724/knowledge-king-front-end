@@ -38,11 +38,11 @@
                 <v-card-title>
                   <v-text-field
                     v-model="question.question"
-                    counter="40"
-                    maxlength="40"
+                    counter="150"
+                    maxlength="150"
                     label="題目"
                     required
-                    :rules="[rules.required, rules.max40]"
+                    :rules="[rules.required, rules.max150]"
                   ></v-text-field>
                 </v-card-title>
                 <v-card-text>
@@ -192,6 +192,8 @@ export default Vue.extend({
       rules: {
         required: (value: any) => !!value || '此欄位為必填',
         max40: (value: string | any[]) => value.length <= 40 || '最長 40 字！',
+        max150: (value: string | any[]) =>
+          value.length <= 40 || '最長 150 字！',
         min1: (value: number) => value >= 1 || '最少不可小於一！',
         timeTooLong: (value: string | any[]) =>
           value.length < 5 || '長度過長，請不要設置不合理的時間。',

@@ -106,6 +106,27 @@
                 </div>
               </div>
             </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-btn
+                v-if="!question.disabled"
+                color="error"
+                small
+                @click="toggleState(question)"
+              >
+                <v-icon left>mdi-lock-outline</v-icon>
+                關閉作答
+              </v-btn>
+              <v-btn
+                v-else
+                color="success"
+                small
+                @click="toggleState(question)"
+              >
+                <v-icon left>mdi-lock-open-variant-outline</v-icon>
+                開放作答
+              </v-btn>
+            </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
@@ -121,7 +142,6 @@ export default Vue.extend({
   middleware: 'role/admin',
   data() {
     return {
-      loading: true,
       groupAndTopics: [] as GroupItem[],
       questions: [] as Question[],
     }
@@ -134,7 +154,6 @@ export default Vue.extend({
       group,
       state: { active: false },
     }))
-    this.loading = false
   },
   methods: {
     async loadQuestions(topic: number) {
@@ -149,6 +168,15 @@ export default Vue.extend({
       return await this.$axios
         .$get(`/admin/questions?topics[]=${topic}`)
         .then((response) => response.data as Question[])
+    },
+    async toggleState(question: Question) {
+      question.disabled = !question.disabled
+      return await this.submit(question)
+    },
+    async submit(question: Question) {
+      return await this.$axios
+        .$patch(`/admin/questions/${question.id}`, question)
+        .then((response) => response.data as Question)
     },
   },
 })

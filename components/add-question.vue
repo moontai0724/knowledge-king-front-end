@@ -17,7 +17,9 @@
     </template>
     <v-form v-model="valid" @submit.prevent="submitQuestions">
       <v-card>
-        <v-card-title class="text-h5 justify-center">新增題目</v-card-title>
+        <v-card-title class="text-h5 justify-center pb-2">
+          新增題目
+        </v-card-title>
         <v-divider></v-divider>
         <v-card-text class="pa-5">
           <v-row justify="center">
@@ -118,6 +120,26 @@
           <v-tooltip top>
             <template #activator="{ on, attrs }">
               <v-btn
+                small
+                class="mx-2"
+                color="red"
+                fab
+                dark
+                right
+                bottom
+                v-bind="attrs"
+                v-on="on"
+                @click.prevent="close"
+              >
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </template>
+            <span>捨棄草稿</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                small
                 class="mx-2"
                 color="green"
                 fab
@@ -136,6 +158,7 @@
           <v-tooltip top>
             <template #activator="{ on, attrs }">
               <v-btn
+                small
                 type="submit"
                 :disabled="!valid"
                 class="mx-2"
@@ -191,6 +214,10 @@ export default Vue.extend({
     },
   },
   methods: {
+    close() {
+      this.questions = []
+      this.dialog = false
+    },
     addQuestion() {
       this.questions.push({
         question: '',

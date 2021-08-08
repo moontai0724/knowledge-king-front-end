@@ -28,7 +28,7 @@
         </v-list-group>
       </v-list>
     </v-col>
-    <v-col cols="9" class="text-center">
+    <v-col cols="9">
       <v-row class="justify-space-around">
         <v-col
           v-for="question in questions"
@@ -130,6 +130,7 @@
           </v-card>
         </v-col>
       </v-row>
+      <add-question></add-question>
     </v-col>
   </v-row>
 </template>

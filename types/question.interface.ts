@@ -3,7 +3,7 @@ import Topic from './topic.interface'
 import User from './user.interface'
 
 export default interface Question {
-  id: number
+  id?: number
   question: string
   option_1: string
   option_2: string
@@ -12,6 +12,6 @@ export default interface Question {
   answer: number
   time_limit: number
   disabled: boolean
-  author: User
-  topic: Topic
+  author?: User
+  topic?: Topic
 }

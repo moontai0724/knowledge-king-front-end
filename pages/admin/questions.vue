@@ -34,6 +34,7 @@
           v-for="question in questions"
           :key="question.id"
           class="flex-grow-1"
+          cols="auto"
         >
           <v-card
             elevation="2"

@@ -111,7 +111,7 @@ export default Vue.extend({
         {
           icon: 'mdi-text-box-search-outline',
           title: '歷史紀錄查詢',
-          to: '',
+          to: '/admin/histories',
           childs: [],
         },
       ],

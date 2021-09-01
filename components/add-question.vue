@@ -99,7 +99,7 @@
                         min="1"
                         max="99999"
                         required
-                        :rules="[required, min1, timeTooLong]"
+                        :rules="[rules.required, rules.min1, rules.timeTooLong]"
                       ></v-text-field>
                     </v-col>
                   </v-row>

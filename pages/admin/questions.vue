@@ -131,7 +131,11 @@
           </v-card>
         </v-col>
       </v-row>
-      <add-question></add-question>
+      <add-question
+        v-if="topicId"
+        :topic-id="topicId"
+        @reload="loadQuestions(topicId)"
+      ></add-question>
     </v-col>
   </v-row>
 </template>
@@ -146,6 +150,7 @@ export default Vue.extend({
     return {
       groupAndTopics: [] as GroupItem[],
       questions: [] as Question[],
+      topicId: 0,
     }
   },
   head: {
@@ -159,6 +164,7 @@ export default Vue.extend({
   },
   methods: {
     async loadQuestions(topic: number) {
+      this.topicId = topic
       this.questions = await this.fetchQuestions(topic)
     },
     async fetchGroupAndTopics() {

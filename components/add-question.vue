@@ -185,6 +185,12 @@
 import Vue from 'vue'
 import Question from '~/types/question.interface'
 export default Vue.extend({
+  props: {
+    topicId: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
       dialog: false,
@@ -216,9 +222,10 @@ export default Vue.extend({
     },
   },
   methods: {
-    close() {
+    close(reload: boolean = false) {
       this.questions = []
       this.dialog = false
+      if (reload) this.$emit('reload')
     },
     addQuestion() {
       this.questions.push({
@@ -235,8 +242,18 @@ export default Vue.extend({
     removeQuestion(index: string | number) {
       this.$delete(this.questions, index)
     },
-    submitQuestions() {
-      this.$store.commit('message/set', '功能尚未實作，目前還不能新增題目哦 ><')
+    async submitQuestions() {
+      return await this.$axios
+        .$post(`/admin/topics/${this.topicId}/questions`, {
+          questions: this.questions,
+        })
+        .then((response) => {
+          if (!response.success) throw new Error('未知的錯誤')
+          this.close(true)
+        })
+        .catch((error) => {
+          this.$store.commit('message/set', error)
+        })
     },
   },
 })

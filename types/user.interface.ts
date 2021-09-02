@@ -17,6 +17,15 @@ export interface User {
   total_time_used: number
 }
 
+export interface UserPublic {
+  id: number
+  name: string
+  account: string
+  registered_at: Date
+  profile_photo: string | null
+  permission: number
+}
+
 export interface UserItem {
   user: User
   stats: {
